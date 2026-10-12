@@ -1,0 +1,34 @@
+# Datasets
+data/raw/
+data/interim/
+data/processed/
+
+# AI models
+*.pt
+*.pth
+*.onnx
+*.engine
+
+# Training outputs
+runs/
+experiments/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Node
+node_modules/
+
+# Environment
+.env
+.env.*
+
+# Logs
+logs/
+*.log
+
+# IDE
+.vscode/
+.idea/
