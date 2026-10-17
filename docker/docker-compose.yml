@@ -1,0 +1,77 @@
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: disaster_response
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d disaster_response"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/backend.Dockerfile
+    volumes:
+      - ./backend:/app
+      - ./docker/entrypoint-backend.sh:/app/entrypoint.sh
+    env_file: .env
+    ports:
+      - "8000:8000"
+    entrypoint: ["/bin/bash", "/app/entrypoint.sh"]
+    depends_on:
+      db:
+        condition: service_healthy
+      rag:
+        condition: service_started
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend.Dockerfile
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "5173:5173"
+
+  rag:
+    build:
+      context: .
+      dockerfile: docker/rag.Dockerfile
+    volumes:
+      - ./rag:/app
+      - ./knowledge:/app/knowledge
+      - ./docker/entrypoint-rag.sh:/app/entrypoint.sh
+    env_file: .env
+    ports:
+      - "8001:8001"
+    entrypoint: ["/bin/bash", "/app/entrypoint.sh"]
+    depends_on:
+      - db
+
+  ollama:
+    image: ollama/ollama
+    volumes:
+      - ollama_data:/root/.ollama
+    ports:
+      - "11434:11434"
+
+  qdrant:
+    image: qdrant/qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+
+volumes:
+  postgres_data:
+  ollama_data:
+  qdrant_data:
