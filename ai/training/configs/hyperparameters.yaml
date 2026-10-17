@@ -1,0 +1,17 @@
+# YOLO Training Hyperparameters
+# Adjusted for satellite imagery damage assessment
+
+epochs: 100
+batch: 16
+imgsz: 640
+patience: 20
+optimizer: 'SGD'
+lr0: 0.01
+lrf: 0.01
+momentum: 0.937
+weight_decay: 0.0005
+warmup_epochs: 3.0
+augment: True
+mosaic: 1.0
+mixup: 0.1
+copy_paste: 0.1

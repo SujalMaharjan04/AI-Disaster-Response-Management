@@ -1,0 +1,12 @@
+# YOLOv8/v11 Segmentation Dataset Config
+path: data/processed/multi_hazards  # dataset root dir
+train: images/train
+val: images/val
+test: images/test
+
+# Classes
+names:
+  0: No Damage
+  1: Minor Damage
+  2: Major Damage
+  3: Destroyed
